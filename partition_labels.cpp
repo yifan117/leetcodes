@@ -31,10 +31,46 @@ std::vector<int> partitionLabels(std::string s) { // O(N) time, O(N) space
     return ans;
 }
 
+std::vector<int> partitionLabelsOptimal(std::string s) {
+    std::vector<int> active (26, 0);
+    std::vector<int> all (26, 0);
+    std::vector<int> res;
+    int count = 0;
+    bool partition = true;
+
+    for (char val : s) {
+        all[val - 'a']++;
+    }
+
+    for (char val : s) {
+        partition = true;
+        count++;
+        active[val - 'a']++;
+
+        if (active[val - 'a'] == all[val - 'a']) {
+            active[val - 'a'] = 0;
+
+            for (int i = 0; i < active.size(); i++) {
+                if (active[i] != 0) {
+                    partition = false;
+                    break;
+                }
+
+                if (partition && (i == active.size() - 1)) {
+                    res.push_back(count);
+                    count = 0;
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
 int main() {
     std::string input = "ababcbacadefegdehijhklij";
 
-    std::vector<int> ans = partitionLabels(input);
+    std::vector<int> ans = partitionLabelsOptimal(input);
 
     for (int val : ans) {
         std::cout << val << std::endl;
